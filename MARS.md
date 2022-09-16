@@ -1,14 +1,13 @@
 # MARS: Installation and Startup
 
-During the next segment of our class, we will be learning more about the MIPS assemble language.  Moreover, you will need to write a number of programs in MIPS assemble.  To help you with these activities, you will need the use of a MIPS assembler, specifically, MARS.
-
-In this assignment, you will download a copy of MARS and perform a number of exercises to familiarize yourself with this simulator.  
+During this semester, you will be learning about the MIPS assemble language. We will be using the MARS IDE.  This file walks you through the process to install the IDE and to begin to become familirize with it.
 
 Perform the following steps:
 
+1. Clone the mars-mips repo.  [Done: as part of the COMP122 setup process.]
+1. Navigate to the mars-mips local repo:  ``cd ~/Desktop/classes/comp122/mars_mips``
 1. Perform a ``git pull`` on the class material repo
-   * Software orginiated at: http://courses.missouristate.edu/KenVollmar/MARS/.
-   * location: comp122/class-material/mips/mars/
+
 
 1. Potentially install java (https://www.java.com/)
 
@@ -20,57 +19,60 @@ Perform the following steps:
     1. Click Open.
 
 1. Locate the files associated with the MIPS material
-  * cd class-material
-  * cd mips
+  * cd ~/Desktop/classes/comp122
+  * cd mars_mips
   * ls 
     * documentation
     * examples
     * mars
 
-1. Review the files in these subdirectories of the mips folder
+1. Review the files in the mars subdirectory
    * MARS features.pdf
    * MARS Tutorial.doc
 
 1. Open the MARS simulator
-  * click on the icon
-  * ``open class-material/mips/mars/Mars4_5.jar``
-  * ``java -jar class-material/mips/mars/Mars4_5.jar ``
-  * 
+  * Using one of the following approaches
+    * click on the icon
+    * ``open ~/Desktop/classes/comp122/mars_mips/mars/Mars4_5.jar``
+    * ``java -jar ~/Desktop/classes/comp122/mars_mips/mars/Mars4_5.jar ``
+  * Make your life easier by defining an alias:
+    * Place the following command in your ~/.profile
     ```
-    alias mars="java -jar ~/Desktop/classes/comp122/class-material/mips/mars/Mars4_5.jar"
-    mars
+    alias mars="java -jar ~/Desktop/classes/comp122/mars_mips/mips/mars/Mars4_5.jar"
     ```
-  * You can also run the simulator from the command line
-    * ``java -jar class-material/mips/mars/Mars4_5.jar filename.asm``
+  * With the alias you can now launch mars either as:
+    * ``mars``: to launch the GUI
+    * ``mars filename.s``: to run the program without the GUI
+      - Note: ``mars checksum.s < inputfile``
 
 1. Complete the following exercises
 
   1. Exercise #1:  Review the Menu Bar.
     * The menu bar is broken down into three major sections: 
-    * File operations.  New, open, save
+    * File operations:  New, open, save
     * Edit operation: Undo, redo, cut, paste, etc.
     * Run operations: Assemble, execute, forward step, backward step, pause, stop, reset.
  
-  1. Exercise #2: Load and execute the "empty.asm" code
-    1. Load the 'empty.asm' code:  (File -> Open )
+  1. Exercise #2: Load and execute the "empty" code
+    1. Load the 'empty.s' code:  (File -> Open )
     1. Assemble the code: (Run -> Assemble)
     1. Step through your code:  (Run -> Step)
     1. Watch what happens in the Text Segment window
  
   1. Exercise #3: Load and execute the "hello_world" code
-    1. Load the 'hello_world.asm' code:  (File -> Open )
+    1. Load the 'hello_world.s' code:  (File -> Open )
     1. Assemble the code: (Run -> Assemble)
     1. Single step through the program until the simulator stops
     1. Watch what happens in the Text Segment and the Register windows
     1. Notice what happens when you encounter the 'syscall' command.
        * This is a trap to the kernel
        * An internal subcommand is executed that prints a string. 
-       * The syscall takes two arguments; in our example, the values are stored in two special registers:  $v0 and $a0.  
+       * The syscall takes two arguments; in our example, the values are stored in two special registers: $v0 and $a0.  
        * The value of the $v0 register specifies that system should print a string.  
        * The value of the $a0 register contains the address in memory of the string to be printed.
        * When you step over this 'syscall' command, look at the console window where the string "hello world" should be printed.  All I/O results are performed within this window.
 
-  1. Exercise #5: Load and execute the "echo_int" code
+  1. Exercise #4: Load and execute the "echo_int" code
      1. Load the 'echo_int.asm' code:  (File -> Open )
      1. Assemble the code: (Run -> Assemble)
      1. Single step through the program until the simulator stops
