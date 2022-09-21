@@ -22,9 +22,9 @@ Perform the following steps:
   * cd ~/Desktop/classes/comp122
   * cd mars-mips
   * ls 
-    * documentation
-    * examples
-    * mars
+    * documentation/
+    * programs/
+    * mars/
 
 1. Review the files in the mars subdirectory
    * MARS features.pdf
