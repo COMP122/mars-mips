@@ -5,7 +5,7 @@ During this semester, you will be learning about the MIPS assemble language. We 
 Perform the following steps:
 
 1. Clone the mars-mips repo.  [Done: as part of the COMP122 setup process.]
-1. Navigate to the mars-mips local repo:  ``cd ~/Desktop/classes/comp122/mars_mips``
+1. Navigate to the mars-mips local repo:  ``cd ~/Desktop/classes/comp122/mars-mips``
 1. Perform a ``git pull`` on the class material repo
 
 
@@ -20,7 +20,7 @@ Perform the following steps:
 
 1. Locate the files associated with the MIPS material
   * cd ~/Desktop/classes/comp122
-  * cd mars_mips
+  * cd mars-mips
   * ls 
     * documentation
     * examples
@@ -33,8 +33,8 @@ Perform the following steps:
 1. Open the MARS simulator
   * Using one of the following approaches
     * click on the icon
-    * ``open ~/Desktop/classes/comp122/mars_mips/mars/Mars4_5.jar``
-    * ``java -jar ~/Desktop/classes/comp122/mars_mips/mars/Mars4_5.jar ``
+    * ``open ~/Desktop/classes/comp122/mars-mips/mars/Mars4_5.jar``
+    * ``java -jar ~/Desktop/classes/comp122/mars-mips/mars/Mars4_5.jar ``
   * Make your life easier by defining an alias:
     * Place the following command in your ~/.profile
     ```
