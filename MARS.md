@@ -36,7 +36,8 @@ Perform the following steps:
     * ``open ~/Desktop/classes/comp122/mars-mips/mars/Mars4_5.jar``
     * ``java -jar ~/Desktop/classes/comp122/mars-mips/mars/Mars4_5.jar ``
   * Make your life easier by defining an alias:
-    * Place the following command in your ~/.profile
+    * Place the following command in your \~/.profile
+      - If you are a zsh user, this command is placed into your ~/.zshrc file
     ```
     alias mars="java -jar ~/Desktop/classes/comp122/mars-mips/mars/Mars4_5.jar"
     ```
