@@ -38,7 +38,7 @@ Perform the following steps:
   * Make your life easier by defining an alias:
     * Place the following command in your ~/.profile
     ```
-    alias mars="java -jar ~/Desktop/classes/comp122/mars-mips/mips/mars/Mars4_5.jar"
+    alias mars="java -jar ~/Desktop/classes/comp122/mars-mips/mars/Mars4_5.jar"
     ```
   * With the alias you can now launch mars either as:
     * ``mars``: to launch the GUI
