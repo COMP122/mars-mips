@@ -48,29 +48,29 @@ Perform the following steps:
 1. Complete the following exercises
 
   1. Exercise #1:  Review the Menu Bar.
-    * The menu bar is broken down into three major sections: 
-    * File operations:  New, open, save
-    * Edit operation: Undo, redo, cut, paste, etc.
-    * Run operations: Assemble, execute, forward step, backward step, pause, stop, reset.
+     1. The menu bar is broken down into three major sections: 
+     1. File operations:  New, open, save
+     1. Edit operation: Undo, redo, cut, paste, etc.
+     1. Run operations: Assemble, execute, forward step, backward step, pause, stop, reset.
  
   1. Exercise #2: Load and execute the "empty" code
-    1. Load the 'empty.s' code:  (File -> Open )
-    1. Assemble the code: (Run -> Assemble)
-    1. Step through your code:  (Run -> Step)
-    1. Watch what happens in the Text Segment window
+     1. Load the 'empty.s' code:  (File -> Open )
+     1. Assemble the code: (Run -> Assemble)
+     1. Step through your code:  (Run -> Step)
+     1. Watch what happens in the Text Segment window
  
   1. Exercise #3: Load and execute the "hello_world" code
-    1. Load the 'hello_world.s' code:  (File -> Open )
-    1. Assemble the code: (Run -> Assemble)
-    1. Single step through the program until the simulator stops
-    1. Watch what happens in the Text Segment and the Register windows
-    1. Notice what happens when you encounter the 'syscall' command.
-       * This is a trap to the kernel
-       * An internal subcommand is executed that prints a string. 
-       * The syscall takes two arguments; in our example, the values are stored in two special registers: $v0 and $a0.  
-       * The value of the $v0 register specifies that system should print a string.  
-       * The value of the $a0 register contains the address in memory of the string to be printed.
-       * When you step over this 'syscall' command, look at the console window where the string "hello world" should be printed.  All I/O results are performed within this window.
+     1. Load the 'hello_world.s' code:  (File -> Open )
+     1. Assemble the code: (Run -> Assemble)
+     1. Single step through the program until the simulator stops
+     1. Watch what happens in the Text Segment and the Register windows
+     1. Notice what happens when you encounter the 'syscall' command.
+        * This is a trap to the kernel
+        * An internal subcommand is executed that prints a string. 
+        * The syscall takes two arguments; in our example, the values are stored  in two special registers: $v0 and $a0.  
+        * The value of the $v0 register specifies that system should print a  string.  
+        * The value of the $a0 register contains the address in memory of the  string to be printed.
+        * When you step over this 'syscall' command, look at the console window where the string "hello world" should be printed.  All I/O results are performed within this window.
 
   1. Exercise #4: Load and execute the "echo_int" code
      1. Load the 'echo_int.asm' code:  (File -> Open )
