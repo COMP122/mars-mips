@@ -64,7 +64,7 @@
 # | write (to fd)    | 15   | int ƛ(fd, &buf, int); |
 # | close (fd)       | 16   | void ƛ(fd);           |
 # | exit (w value)   | 17   | void ƛ(int);          | 
-# | exiti (w value)  | 17   | void ƛ(imm);          |
+# | exit_i (w value) | 17   | void ƛ(imm);          |
 # | print_x          | 34   | void ƛ(int);          |
 # | print_xi         | 34   | void ƛ(imm);          |
 # | print_t          | 35   | void ƛ(imm);          |
@@ -151,14 +151,14 @@
     li $v0, 1
     syscall
 .end_macro
-.macro print_d(%imm)
+.macro print_di(%imm)
     # Print a decimal value from an immediate value
     li $a0, %imm
     li $v0, 1
     syscall
 .end_macro
 
-.macro print_si(%reg)
+.macro print_s(%reg)
     # Print the string whose address is in a register
     move $a0, %reg
     li $v0, 4
