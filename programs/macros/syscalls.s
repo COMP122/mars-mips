@@ -64,7 +64,7 @@
 # | write (to fd)    | 15   | int ƛ(fd, &buf, int); |
 # | close (fd)       | 16   | void ƛ(fd);           |
 # | exit (w value)   | 17   | void ƛ(int);          | 
-# | exit_i (w value) | 17   | void ƛ(imm);          |
+# | exiti (w value)  | 17   | void ƛ(imm);          |
 # | print_x          | 34   | void ƛ(int);          |
 # | print_xi         | 34   | void ƛ(imm);          |
 # | print_t          | 35   | void ƛ(imm);          |
@@ -79,46 +79,55 @@
 ######################################################
 # Macros that perform input from stdin
 # | read_d           |  5   | int  ƛ(void);         |
+# | read_c           | 12   | byte ƛ(void);         |
 # | read_s           |  8   | int  ƛ(&str, int);    |
 # | read_si          |  8   | int  ƛ(&str, int);    |
-# | read_c           | 12   | byte ƛ(void);         |
+
 
 .macro read_d()
-    # Read a (signed) decimal value into $v0
-    li $v0, 5
-    syscall
-.end_macro
-
-.macro read_s(%reg1, %reg2)
-    # Follows semantics of UNIX 'fgets'.  
-    #   Reads at most n-1 characters. A newline ('\n') is placed in the last
-    #   character read, and then string is then padded with a null character ('\0').
-    #   If n = 1, input is ignored, and a null byte written to the buffer.
-    #   If n <=1, input is ignored, and nothing is written to the buffer.
-    # $v0 defines the actual number of bytes read
-    move $a0, %reg1
-    move $a1, %reg2
-    li $v0, 8
-    syscall
-.end_macro
-.macro read_si(%reg1, %imm)
-    # Follows semantics of UNIX 'fgets'.  
-    #   Reads at most n-1 characters. A newline ('\n') is placed in the last
-    #   character read, and then string is then padded with a null character ('\0').
-    #   If n = 1, input is ignored, and a null byte written to the buffer.
-    #   If n <=1, input is ignored, and nothing is written to the buffer.
-    # $v0 defines the actual number of bytes read
-    move $a0, %reg1
-    li $a1, %imm
-    li $v0, 8
-    syscall
+        nop                     # Reads from stdin, a decimal (%d) number
+        li $v0, 5
+        syscall                 
+        nop                     # The value is now in $v0
 .end_macro
 
 .macro read_c()
-    # Read a ASCII character into $v0
+        nop                     # Reads from stdin, a character (%c)
+        li $v0, 12
+        syscall 
+        nop                     # The character is now in $v0
+.end_macro
 
-    li $v0, 12
-    syscall
+.macro read_s(%reg1, %reg2)
+        # Follows semantics of UNIX 'fgets'.  
+        #   Reads at most n-1 characters. A newline ('\n') is placed in the last
+        #   character read, and then string is then padded with a null character ('\0').
+        #   If n = 1, input is ignored, and a null byte written to the buffer.
+        #   If n <=1, input is ignored, and nothing is written to the buffer.
+        # $v0 defines the actual number of bytes read
+
+        nop                     # Reads from stdin a string (%s)
+        move $a0, %reg1         #   &buffer : the address of the buffer
+        move $a1, %reg2         #   num     : the number of bytes to read
+        li $v0, 8
+        syscall
+        nop                     # The MEM[%reg1] has been updated                    
+
+.end_macro
+.macro read_si(%reg1, %imm)
+        # Follows semantics of UNIX 'fgets'.  
+        #   Reads at most n-1 characters. A newline ('\n') is placed in the last
+        #   character read, and then string is then padded with a null character ('\0').
+        #   If n = 1, input is ignored, and a null byte written to the buffer.
+        #   If n <=1, input is ignored, and nothing is written to the buffer.
+        # $v0 defines the actual number of bytes read
+
+        nop                     # Reads from stdin, a string (%s)
+        move $a0, %reg1         #   &buffer:   the address of the input buffer
+        li $a1, %imm            #   num:       the number of bytes to read
+        li $v0, 8
+        syscall
+        nop                     # The MEM[%reg1] has been updated                    
 .end_macro
 
 #   read_s 8:  Follows semantics of UNIX 'fgets'.  
@@ -146,85 +155,99 @@
 # | print_ui         | 36   | void ƛ(int);          | 
 
 .macro print_d(%reg)
-    # Print a decimal value from a register
-    move $a0, %reg
-    li $v0, 1
-    syscall
+        nop                     # Prints to stdout, a value as a decimal (%d) number
+        move $a0, %reg          # The value is in the register
+        li $v0, 1
+        syscall
+        nop                     # The value has been printed to stdout
 .end_macro
 .macro print_di(%imm)
-    # Print a decimal value from an immediate value
-    li $a0, %imm
-    li $v0, 1
-    syscall
+        nop                     # Prints to stdout, a value as a decimal (%d) number
+        li $a0, %imm            # The value is an immediate value
+        li $v0, 1
+        syscall
+        nop                     # The value has been printed to stdout
 .end_macro
 
 .macro print_s(%reg)
-    # Print the string whose address is in a register
-    move $a0, %reg
-    li $v0, 4
-    syscall
+        nop                     # Prints to stdout, a string (%s)
+        move $a0, %reg          # The address of the string 
+        li $v0, 4
+        syscall
+        nop                     # The value has been printed to stdout
 .end_macro
-.macro print_si(%imm)
-    # Print the string given its address
-    la $a0, %imm
-    li $v0, 4
-    syscall
+.macro print_si(%label)
+        nop                     # Prints to stdout, a string (%s)
+        la $a0, %label          # The label of the string
+        li $v0, 4
+        syscall
+        nop                     # The value has been printed to stdout
 .end_macro
 
 .macro print_c(%reg)
-    # Print the lsb, of a register, as an ASCII character
-    move $a0, %reg
-    li $v0, 11
-    syscall
+        nop                     # Prints to stdout, a character (%c)
+        move $a0, %reg          # The character is the lsb in the register
+        li $v0, 11              #   note only the least-significant byte is used 
+        syscall
+        nop                     # The value has been printed to stdout
 .end_macro
 .macro print_ci(%imm)
-    # Print the lsb, of an immediate, as an ASCII character
-    li $a0, %imm
-    li $v0, 11
-    syscall
+        nop                     # Prints to stdout, a character (%c)
+        li $a0, %imm            # The character is an immediate value
+        li $v0, 11              #   note only the least-significant byte is used
+        syscall
+        nop                     # The value has been printed to stdout
 .end_macro
 
 .macro print_x(%reg)
-    # Print a hexadecimal value whose value is in a register
-    # -- 8 hexadecimal digits, left-padding with zeros
-    move $a0, %reg
-    li $v0, 34
-    syscall
+        nop                     # Prints to stdout, a value as a hexadecimal (%x) number
+        move $a0, %reg          # The value is in the register
+        li $v0, 34          
+        syscall
+        nop                     # The value has been printed to stdout
+
 .end_macro
 .macro print_xi(%imm)
-    # Print a hexadecimal value from an immediate value
-    # -- 8 hexadecimal digits, left-padding with zeros
-    li $a0, %imm
-    li $v0, 34
-    syscall
+        nop                     # Prints to stdout, a value as a hexadecimal (%x) number
+        li $a0, %imm            # The value is an immediate value
+        li $v0, 34
+        syscall 
+        nop                     # The value has been printed to stdout
 .end_macro
 
 .macro print_t(%reg)
     # Print a hexadecimal value whose value is in a register
     # -- 32 binary digits, left-padding with zeros
-    li $v0, 35
-    move $a0, %t
-    syscall
+        nop                     # Prints to stdout, a value as a binary string
+        move $a0, %reg          # The value is in the register
+        li $v0, 35              
+        syscall
+        nop                     # The value has been printed to stdout
 .end_macro
 .macro print_ti(%imm)
-    # Print a binary value from an immediate value
-    # -- 32 binary digits, left-padding with zeros
-    li $v0, 35
-    move $a0, %t
-    syscall
+        # Print a binary value from an immediate value
+        # -- 32 binary digits, left-padding with zeros
+        nop                     # Prints to stdout, a value as a binary string
+        move $a0, %imm          # The value is an immediate value
+        li $v0, 35
+        syscall
+        nop                     # The value has been printed to stdout
 .end_macro
 
-.macro print_u(%u)
-    # Print an unsigned decimal value whose value is in a register
-    li $v0, 36
-    move $a0, %u
-    syscall
-  .end_macro
-.macro print_ui(%u)
-    # Print an unsigned decimal value from an immediate value
-    li $v0, 36
-    move $a0, %u
-    syscall
+.macro print_u(%reg)
+        nop                     # Prints to stdout, an unsigned decimal value
+        move $a0, %reg          # The value is in the register
+        li $v0, 36
+        syscall
+        nop                     # The value has been printed to stdout
+
+.end_macro
+.macro print_ui(%imm)
+        nop                     # Prints to stdout, an unsigned decimal value
+        move $a0, %imm          # The value is an immediate value
+        li $v0, 36
+        syscall
+        nop                     # The value has been printed to stdout
 .end_macro
 
 
@@ -236,36 +259,40 @@
 # | close (fd)        | 16   | void ƛ(fd);           |
 
 .macro open(%reg0, %reg1, %reg2)
-      # Open a file 
-      move $a0, %reg0    # filename
-      move $a1, %reg1    # flags: readonly (0) writeonly(1), append(9)
-      move $a2, $reg2    # mode: ignored
-      li $v0, 13
-      syscall            # $v0 contains that "fd" of the file
+        nop                     # Opens a file 
+        move $a0, %reg0         #   &filename: the address of the filename
+        move $a1, %reg1         #   flags:     readonly (0) writeonly(1), append(9)
+        move $a2, $reg2         #   mode:      ignored
+        li $v0, 13
+        syscall 
+        nop                     # $v0 contains the "fd" (file descriptor) of the file
 .end_macro
 
 .macro read
-      # read from "fd", placing the contents into buffer to the file "fd"
-      move $a0, %reg0    # fd
-      move $a1, %reg1    # &buffer
-      move $a2, $reg2    # num bytes
-      li $v0, 14
-      syscall            # $v0 contains that number of bytes read
+        nop                     # Reads from "fd", placing the contents into buffer
+        move $a0, %reg0         #   fd:        the file descriptor of the file
+        move $a1, %reg1         #   &buffer:   the address of the buffer
+        move $a2, $reg2         #   num:       the number of bytes to read
+        li $v0, 14
+        syscall            
+        nop                     # $v0 contains that number of bytes read
 .end_macro
 
 .macro write
-      # write the contents of the buffer to the file "fd"
-      move $a0, %reg0   # fd
-      move $a1, %reg1   # &buffer
-      move $a2, $reg2   # num bytes
-      li $v0, 15
-      syscall           # $v0 contains that number of bytes written
+        nop                     # Writes to "fd", the contents of the buffer
+        move $a0, %reg0         #   fd:        the file descriptor of the file
+        move $a1, %reg1         #   &buffer:   the address of the buffer
+        move $a2, $reg2         #   num:       the number of bytes to read
+        li $v0, 15
+        syscall
+        nop                     # $v0 contains that number of bytes written
 .end_macro
 
 .macro close
-      move $a0, %reg0
-      li $v0, 16
-      syscall
+        nop                     # Closes a file
+        move $a0, %reg0         #   fd:        the file descriptor of the file
+        li $v0, 16
+        syscall
 .end_macro
 
 
@@ -287,44 +314,47 @@
 # | exiti             | 17   | void ƛ(imm);          |
 
 .macro sbrk(%reg)
-     move $a0, %reg
-     li $v0, 9
-     syscall
+        nop                     # Allocates a block of memory
+        move $a0, %reg          #   num:       the number of bytes to read
+        li $v0, 9
+        syscall
+        nop                     # $v0 contains the address of the block 
 .end_macro
 .macro allocate(%reg)
-     sbrk %reg
+        sbrk %reg
 .end_macro
 
 .macro sbrki(%imm)
-     li $a0, %imm
-     li $v0, 9
-     syscall
+        nop                     # Allocates a block of memory given an immediate value
+        li $a0, %imm            #   num:       the number of bytes to read
+        li $v0, 9
+        syscall
+        nop                     # $v0 contains the address of the block 
+
 .end_macro
 .macro allocatei(%imm)
-     sbrki %imm
+        sbrki %imm
 .end_macro
 
 .macro exit()
-      # Terminates the program without a return value
-      li $v0, 10
-      syscall
+        nop                     # Halts program without a return value
+        li $v0, 10              
+        syscall                 # Violates best practice
 .end_macro
 
 .macro exit(%reg)
-      # Terminate the program with the provided value
-      # Note that under the MARS GUI, this has no impact.
-      move $a0, %reg
-      li $v0, 17
-      syscall
+        nop                     # Halt program with register holding exit code
+        move $a0, %reg
+        li $v0, 17
+        syscall
 .end_macro
 
 
 .macro exiti(%imm)
-      # Terminate the program with the provided value
-      # Note that under the MARS GUI, this has no impact.
-      li $a0, %imm
-      li $v0, 17
-      syscall
+        nop                     # Halt program with immediate exit code
+        li $a0, %imm
+        li $v0, 17
+        syscall
 .end_macro
 
 
