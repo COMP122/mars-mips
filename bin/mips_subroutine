@@ -145,6 +145,8 @@ function sub_routine_call () {
 function build_data_segment () {
   echo "${SPACE15} .data"
   echo ""
+  echo ""
+  echo ""  
   echo "subroutine:     .asciiz \"${SUB_NAME}\""
   echo "                # ${SUB_CALL}"
   echo "                # Register Dump: ${DUMP_REG_LIST} ${DUMP_T_REGS} ${DUMP_V_REGS}"
@@ -170,17 +172,17 @@ function build_data_segment () {
 
     case ${_type} in 
       double)
-         echo "                   .align 3"
+         echo "                .align 3"
          echo "arg_${i}:          .double $_value"
          ;;
 
       char)
-         echo "                   .align 2"
+         echo "                .align 2"
          echo "arg_${i}:          .word '$_value' # '$_text'"
          ;;
 
       integer)
-         echo "                   .align 2"
+         echo "                .align 2"
          echo "arg_${i}:          .word $_value # $_text"
          ;;
 
@@ -188,12 +190,15 @@ function build_data_segment () {
         echo "arg_${i}:          .asciiz \"$_text\""
         ;;
     esac
+    echo ""
        
   done
   echo "                .align 2"
   echo "saved_sp:       .word"
-  echo
-
+  echo "                .align 2"
+  echo "saved_float:    .float"
+  echo "                .align 3"
+  echo "saved_double:   .double"
 }
 
 function marshal_in_registers () {
@@ -337,7 +342,7 @@ function set_registers () {
     echo ""
     echo "${SPACE15} # Set the T registers to be random values"
     for ((i=0; i <= 9 ; i++ )) ; do
-      echo "${SPACE15} li \$t${i}, ${RANDOM}${RANDOM}"
+      echo "${SPACE15} li \$t${i}, ${RANDOM}"
     done
     echo ""
     echo "${SPACE15} # Set the S registers to 0xDeadBeef"
@@ -430,9 +435,10 @@ EOF
       echo "${SPACE15} li \$v0, 3"
       echo "${SPACE15} syscall"
       ;;
+
     string)
       echo "${SPACE15} # Print out the string value"
-      echo "${SPACE15} li \$a0, 0x22" #0x22 is the code for \"
+      echo "${SPACE15} li \$a0, 0x22" #0x22 is the code for double quote (\")
       echo "${SPACE15} li \$v0, 11"
       echo "${SPACE15} syscall"
 
@@ -440,7 +446,7 @@ EOF
       echo "${SPACE15} li \$v0, 4"
       echo "${SPACE15} syscall"
 
-      echo "${SPACE15} li \$a0, 0x22" #0x22 is the code for \"
+      echo "${SPACE15} li \$a0, 0x22" #0x22 is the code for double quote (\")
       echo "${SPACE15} li \$v0, 11"
       echo "${SPACE15} syscall"
       ;;
@@ -629,9 +635,9 @@ for ((i=0; i < ${#SUB_ARGS_TEXT[@]}; i++)) ; do
         _type="double"
 
   # Handles based numbers
-  egrep -q "^[+-]?[2-9][0-9]*#[0-9]+$" <<< ${SUB_ARGS_TEXT[$i]} && {
+  egrep -q "^[+-]?[2-9][0-9]*#[ 0-9]+$" <<< ${SUB_ARGS_TEXT[$i]} && {
          _type="integer" 
-         _value=$(( ${SUB_ARGS_TEXT[$i]} ))
+         _value=$(( $(sed -e 's/ //g' <<< ${SUB_ARGS_TEXT[$i]} ) ))
   }
 
   # Handles octal and decimal.
