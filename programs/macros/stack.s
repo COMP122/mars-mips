@@ -155,7 +155,7 @@
 .macro pop(%r0)
         nop                     # Popping 1 register
         lw %r0, 0($sp)
-        addiu $sp, $sp, 4      # 1 * 4 bytes = 4
+        addiu $sp, $sp, 4       # 1 * 4 bytes = 4
 .end_macro
 
 .macro pop(%r0, %r1)
@@ -262,21 +262,21 @@
 # Aggregate Macros
 
 .macro push_t_registers()
-        nop             # Push all of the T registers
+        nop                     # Push all of the T registers
         push $t0, $t1, $t2, $t3, $t4, $t5, $t6, $t7, $t8, $t9
 .end_macro
 
 .macro pop_t_registers()
-        nop             # Pop all of the T registers
+        nop                     # Pop all of the T registers
         pop $t0, $t1, $t2, $t3, $t4, $t5, $t6, $t7, $t8, $t9
 .end_macro
 
 .macro push_s_registers()
-        nop             # Push all of the S registers
+        nop                     # Push all of the S registers
         pop $s0, $s1, $s2, $s3, $s4, $s5, $s6, $s7
 .end_macro
 
 .macro pop_s_registers()
-        nop             # Pop all of the S registers
+        nop                     # Pop all of the S registers
         pop $s0, $s1, $s2, $s3, $s4, $s5, $s6, $s7
 .end_macro

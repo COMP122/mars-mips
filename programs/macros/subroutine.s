@@ -1,3 +1,17 @@
+.macro pop_results()
+.end_macro
+
+.macro pop_results(%v0)
+       nop                      # Demarshaling Input Args
+       move %v0, $v0            # On MIPS, the first return value is in $v0
+.end_macro
+
+.macro pop_results(%v0, %v1)
+       nop                      # Demarshaling Input Args
+       move %v0, $v0            # On MIPS, the first return value is in $v0
+       move %v1, $v1            # On MIPS, the second return value is in $v1
+.end_macro
+
 .macro push_args()
 .end_macro
 .macro push_args(%a0)
@@ -28,6 +42,6 @@
         move $a1, %a1
         move $a2, %a2
         move $a3, %a3
-        nop                    # Remaing Args go on the Stack
+        nop                     # Remaining Args go on the Stack
         push(%a4)               
 .end_macro
