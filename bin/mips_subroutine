@@ -630,6 +630,8 @@ for ((i=0; i < ${#SUB_ARGS_TEXT[@]}; i++)) ; do
   # Handles ASCII chars
   egrep -q "^.$" <<< ${SUB_ARGS_TEXT[$i]} &&
         _type="char"
+  egrep -q "^\\.$" <<< ${SUB_ARGS_TEXT[$i]} &&
+        _type="char"
 
   egrep -q "^[+-]?[0-9]+\.[0-9]+$" <<< ${SUB_ARGS_TEXT[$i]} &&
         _type="double"
@@ -640,15 +642,21 @@ for ((i=0; i < ${#SUB_ARGS_TEXT[@]}; i++)) ; do
          _value=$(( $(sed -e 's/ //g' <<< ${SUB_ARGS_TEXT[$i]} ) ))
   }
 
+  # Handles binary
+  egrep -q "^[+-]?0[bB][ 01]+$" <<< ${SUB_ARGS_TEXT[$i]} && {
+         _type="integer" 
+         _value=$(( $(sed -e 's/ //g' <<< ${SUB_ARGS_TEXT[$i]} ) ))
+  }
+
   # Handles octal and decimal.
   egrep -q "^[+-]?[0-9]+$" <<< ${SUB_ARGS_TEXT[$i]} && {
          _type="integer" 
          _value=$(( ${SUB_ARGS_TEXT[$i]} ))
   }
   # Handles hexadecimal
-  egrep -q "^[+-]?0[xX]?[0-9A-Fa-f]+$" <<< ${SUB_ARGS_TEXT[$i]} && {
+  egrep -q "^[+-]?0[xX]?[ 0-9A-Fa-f]+$" <<< ${SUB_ARGS_TEXT[$i]} && {
          _type="integer" 
-         _value=$(( ${SUB_ARGS_TEXT[$i]} ))
+         _value=$(( $(sed -e 's/ //g' <<< ${SUB_ARGS_TEXT[$i]} ) ))
   }
 
   SUB_ARGS_TYPES[${i}]=$_type
@@ -679,9 +687,13 @@ fi
 build_boot_file
 
 #  1. Execute Mars with boot file
-${MARS} nc sm se1 ${DUMP_REGISTERS} \
+#  ae1 is needed in the case there is a linkage error.
+${MARS} nc sm ae2 se1 ${DUMP_REGISTERS} \
      ${BOOT_FILE} ${SUB_NAME}.s > ${OUTPUT_FILE} 2>/dev/null
-
+if [[ $? == 2 ]] ; then 
+   sed "s|$PWD/||" ${OUTPUT_FILE}
+   exit 1; 
+fi
 
 # 1. Post process output
 post_process "$?"
