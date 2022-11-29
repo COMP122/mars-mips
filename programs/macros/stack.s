@@ -243,7 +243,7 @@
 .end_macro
 
 .macro pop(%r0, %r1, %r2, %r3, %r4, %r5, %r6, %r7, %r8, %r9)
-        nop                     # Popping 19 registers
+        nop                     # Popping 10 registers
         lw %r9, 36($sp)
         lw %r8, 32($sp)
         lw %r7, 28($sp)

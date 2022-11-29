@@ -423,26 +423,29 @@ EOF
     null) 
       ;;
     integer)
-      echo "${SPACE15} # Print out the integer value"
+      echo "${SPACE15} # Print the integer in \$v0"
       echo "${SPACE15} move \$a0, \$v0"
       echo "${SPACE15} li \$v0, 1"
       echo "${SPACE15} syscall"
       ;;
 
     double)
-      echo "${SPACE15} # Print out the double value"
+      echo "${SPACE15} # Print the double in \$f0"
       echo "${SPACE15} move \$a0, \$f0"
       echo "${SPACE15} li \$v0, 3"
       echo "${SPACE15} syscall"
       ;;
 
     string)
-      echo "${SPACE15} # Print out the string value"
+      echo "${SPACE15} # Print the string, address in\$v0"
+      echo "${SPACE15} #   First move \$v0 to \$a1, temporarilly"
+      echo "${SPACE15} move \$a1, \$v0"
+
       echo "${SPACE15} li \$a0, 0x22" #0x22 is the code for double quote (\")
       echo "${SPACE15} li \$v0, 11"
       echo "${SPACE15} syscall"
 
-      echo "${SPACE15} move \$a0, \$v0"
+      echo "${SPACE15} move \$a0, \$a1"
       echo "${SPACE15} li \$v0, 4"
       echo "${SPACE15} syscall"
 
@@ -677,7 +680,7 @@ grep -q "${SUB_NAME}:" ${SUB_NAME}.s  ||
 
 
 #  1. Assemble ${SUB_NAME}.s, stop if there are errors
-${MARS} nc a ae1 ${SUB_NAME}.s  > ${ASSEMBLER_FILE}
+${MARS} nc a ae1 p ${SUB_NAME}.s  > ${ASSEMBLER_FILE}
 if [[ $? == 1 ]] ; then 
    sed "s|$PWD/||" ${ASSEMBLER_FILE}
    exit 1; 
@@ -688,7 +691,7 @@ build_boot_file
 
 #  1. Execute Mars with boot file
 #  ae1 is needed in the case there is a linkage error.
-${MARS} nc sm ae2 se1 ${DUMP_REGISTERS} \
+${MARS} nc sm ae2 se1 p ${DUMP_REGISTERS} \
      ${BOOT_FILE} ${SUB_NAME}.s > ${OUTPUT_FILE} 2>/dev/null
 if [[ $? == 2 ]] ; then 
    sed "s|$PWD/||" ${OUTPUT_FILE}
